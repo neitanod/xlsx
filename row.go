@@ -14,11 +14,17 @@ type Row struct {
 	customHeight bool         // customHeight is a flag to let the writer know that this row has a custom height
 	num          int          // Num hold the positional number of the Row in the Sheet
 	cellStoreRow CellStoreRow // A reference to the underlying CellStoreRow which handles persistence of the cells
+	cellCount    int          // Number of cells in current row
 }
 
 // GetCoordinate returns the y coordinate of the row (the row number). This number is zero based, i.e. the Excel CellID "A1" is in Row 0, not Row 1.
 func (r *Row) GetCoordinate() int {
 	return r.num
+}
+
+// GetCellCount returns the number of cells that this row has
+func (r *Row) GetCellCount() int {
+    return r.cellCount;
 }
 
 // setHeight internally sets the "height" value for a row along with letting
@@ -73,6 +79,7 @@ func (r *Row) AddCell() *Cell {
 	if cell.num > r.Sheet.MaxCol-1 {
 		r.Sheet.MaxCol = cell.num + 1
 	}
+	r.cellCount++
 	return cell
 }
 
@@ -81,6 +88,7 @@ func (r *Row) PushCell(c *Cell) {
 	r.cellStoreRow.Updatable()
 	r.isCustom = true
 	r.cellStoreRow.PushCell(c)
+	r.cellCount++
 }
 
 func (r *Row) makeCellKey(colIdx int) string {
