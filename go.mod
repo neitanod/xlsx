@@ -1,4 +1,4 @@
-module github.com/neitanod/xlsx/v3
+module github.com/neitanod/xlsx
 
 go 1.15
 
